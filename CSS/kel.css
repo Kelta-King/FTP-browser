@@ -10,6 +10,10 @@
   background-attachment: fixed;
 }
 
+#mySidebar{
+	overflow:scroll;
+}
+
 html {
   scroll-behavior: smooth;
   
