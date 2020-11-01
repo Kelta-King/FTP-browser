@@ -1,6 +1,17 @@
 <?php
 require_once("Config/ftpConnect.php");
 
+session_start();
+
+//When a user loads this page, they will automatically first logged out by them selves for browser
+if(isset($_SESSION['ftp_User']) && isset($_SESSION['login_details'])){
+
+	unset($_SESSION['login_details']);
+	unset($_SESSION['ftp_User']);
+	unset($_SESSION['data']);
+
+}
+
 include("Classes/classes.php");
 
 $error = "-";
@@ -14,13 +25,24 @@ if(isset($_POST['username']) && isset($_POST['password'])){
 	if($ftpUser->checkLogin()){
 		
 		//code if the login is successfull
-		echo "Again successfull";
+		echo "successfull login";
+		
+		$_SESSION['ftp_User'] = $ftpUser;
+		$_SESSION['login_details'] = $_POST['username'];
+		
+		$_SESSION['data'] = base64_encode($_POST['username']."#".$_POST['password']);
+		
 	}
 	else{
 		//code if the login is fail
 		$error = "Incorrect password or username";
 	}
 	
+	if(isset($_SESSION['ftp_User']) && isset($_SESSION['login_details'])){
+		
+		header("Location:fileManager.php");
+		
+	}
 	
 }
 
@@ -81,5 +103,7 @@ if(isset($_POST['username']) && isset($_POST['password'])){
 </body>
 </html>
 <?php
+
 require_once("Config/ftpClose.php");
+
 ?>
