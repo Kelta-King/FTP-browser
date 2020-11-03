@@ -13,7 +13,9 @@ if(isset($_SESSION['ftp_User']) && isset($_SESSION['login_details']) && isset($_
 	//user has logged in area
 
 		$name = $_REQUEST['Name'];
-		if($ftpUser->makeDir($data, $ftp_conn, $name)){
+		$dirLoc = $_SESSION['directory'];
+		
+		if($ftpUser->makeDir($data, $ftp_conn, $dirLoc."/".$name)){
 			
 		}
 		else{
