@@ -29,6 +29,7 @@ if(isset($_POST['username']) && isset($_POST['password'])){
 		
 		$_SESSION['ftp_User'] = $ftpUser;
 		$_SESSION['login_details'] = $_POST['username'];
+		$_SESSION['directory'] = "/";
 		
 		$_SESSION['data'] = base64_encode($_POST['username']."#".$_POST['password']);
 		
