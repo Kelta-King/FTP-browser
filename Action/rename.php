@@ -14,8 +14,9 @@ if(isset($_SESSION['ftp_User']) && isset($_SESSION['login_details']) && isset($_
 
 		$newName = $_REQUEST['newName'];
 		$oldName = $_REQUEST['oldName'];
-		
-		if($ftpUser->renameFile($data, $ftp_conn, $oldName, $newName)){
+		$dirLoc = $_SESSION['directory'];
+	
+		if($ftpUser->renameFile($data, $ftp_conn, $oldName, $dirLoc."/".$newName)){
 			
 		}
 		else{
