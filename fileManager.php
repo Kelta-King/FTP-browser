@@ -3,19 +3,55 @@
 require_once("Config/ftpConnect.php");
 include("Classes/classes.php");
 session_start();
-
+//$_SESSION['directory'] = "";
 if(isset($_SESSION['ftp_User']) && isset($_SESSION['login_details']) && isset($_SESSION['data'])){
 	
 	$ftpUser = $_SESSION['ftp_User'];
 	$data = $_SESSION['data'];
 	
 	if($ftpUser->checkLogin()){
+		
+		if(isset($_POST["submit"])){
+			
+			$dirLoc = $_SESSION['directory'];
+			$uploadFile = $_FILES["file"]["tmp_name"];
+			$name = basename($_FILES["file"]["name"]);
+			
+			if($ftpUser->uploadFile($data, $ftp_conn, $dirLoc."/".$name, $uploadFile)){
+?>
+<div id="sus" class="w3-modal w3-display-middle" style="z-index:4;display:block" onclick="document.getElementById('sus').style.display = 'none'">
+	<span class="w3-modal-content">
+	<center>
+	<div class="w3-padding w3-green w3-large w3-padding w3-round w3-animate-zoom kel-hover-2" style="max-width:400px;">
+		File uploaded succesfully
+	</div>
+	</center>
+	</span>
+</div>
+<?php
+			}
+			else{
+?>
+<div id="fail" class="w3-modal w3-display-middle" style="z-index:4;display:block" onclick="document.getElementById('fail').style.display = 'none'">
+	<span class="w3-modal-content">
+	<center>
+	<div class="w3-padding w3-pale-red w3-text-red w3-large w3-padding w3-round w3-animate-zoom" style="max-width:400px;">
+		File did not uploaded
+	</div>
+	</center>
+	</span>
+</div>
+<?php
+			}
+			
+		}
+		
 	//user has logged in area
 ?>
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>FTP-Browser | Login</title>
+		<title>FTP-Browser | Browse files</title>
 		<meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -31,126 +67,55 @@ if(isset($_SESSION['ftp_User']) && isset($_SESSION['login_details']) && isset($_
 				-webkit-animation: spin 1s linear infinite; /* Safari */
 				animation: spin 1s linear infinite;
 			}
+			input[type='file'] {
+    border: 3px dashed #999;
+    padding: 140px 50px 10px 50px;
+    cursor: move;
+    position:relative;
+}
+input[type='file']:before {
+    content: "drag & drop your files here";
+    display: block;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 40px;
+    margin: -25px 0 0 -100px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #999;
+}
 		</style>
 	</head>
 <body>
-<div id="addFolder" class="w3-modal w3-display-middle" style="z-index:4">
-	<span class="w3-modal-content">
-	<center>
-	<div class="w3-padding w3-theme w3-round w3-animate-zoom" style="max-width:400px;">
-	<div class="">
-		<span class="w3-right kel-hover-2" onclick="closeFolderModal()"><i class="fa fa-times"></i></span>
-	</div>
-	<span class="w3-xlarge">Add Folder</span>
-	<div class="loader" id="loader-fold" style="display:none"></div>
-	<div class="w3-text-red" id="error-fold"></div>
-		<div class="w3-section">
-			<input type="" id="fileName" class="w3-input w3-border" style="width:80%" placeholder="File name">
-		</div>
-		<div class="w3-section">
-			<button class="w3-input w3-border kel-hover-2" onclick="addDir()" style="width:80%">Add Folder</button>
-		</div>
-	</div>
-	</center>
-	</span>
-</div>
 
-<div id="renameFile" class="w3-modal w3-display-middle" style="z-index:4">
-	<span class="w3-modal-content">
-	<center>
-	<div class="w3-padding w3-theme w3-round w3-animate-zoom" style="max-width:400px;">
-	<div class="">
-		<span class="w3-right kel-hover-2" onclick="closeRenameModal()"><i class="fa fa-times"></i></span>
-	</div>
-	<span class="w3-xlarge">Rename</span>
-	<div class="loader" id="loader-rename" style="display:none"></div>
-	<div class="w3-text-red" id="error-rename"></div>
-		<div class="w3-section">
-		Old Name
-			<input type="" id="oldName" class="w3-input w3-border" style="width:80%" placeholder="Old name">
-		</div>
-		<div class="w3-section">
-		New Name
-			<input type="" id="newName" class="w3-input w3-border" style="width:80%" placeholder="New name">
-		</div>
-		<div class="w3-section">
-			<button class="w3-input kel-hover-2 w3-black" onclick="renameThing()" style="width:80%">Rename</button>
-		</div>
-	</div>
-	</center>
-	</span>
-</div>
+<?php
+	include("Contains/models.php");
+?>
 
-<div id="deleteFile" class="w3-modal w3-display-middle" style="z-index:4">
-	<span class="w3-modal-content">
-	<center>
-	<div class="w3-padding w3-theme w3-round w3-animate-zoom" style="max-width:400px;">
-	<div class="">
-		<span class="w3-right kel-hover-2" onclick="closeDeleteFileModal()"><i class="fa fa-times"></i></span>
-	</div>
-	<span class="w3-xlarge">Are you sure?</span>
-	<div class="loader" id="loader-del-file" style="display:none"></div>
-	<div class="w3-text-red" id="error-del-file"></div>
-	<span>
-	Do you really want to delete <span id="filename_del"></span> file?
-	</span>
-		<div class="w3-bar w3-margin-top">
-			<button class="w3-bar-item kel-hover-2 w3-light-gray w3-right" onclick="closeDeleteFileModal()" >cancel</button>
-			<button class="w3-bar-item kel-hover-2 w3-black w3-right w3-margin-right" onclick="deleteFile()" >Yes</button>
-		</div>
-	</div>
-	</center>
-	</span>
-</div>
-
-<div id="deleteFolder" class="w3-modal w3-display-middle" style="z-index:4">
-	<span class="w3-modal-content">
-	<center>
-	<div class="w3-padding w3-theme w3-round w3-animate-zoom" style="max-width:400px;">
-	<div class="">
-		<span class="w3-right kel-hover-2" onclick="closeDeleteFolderModal()"><i class="fa fa-times"></i></span>
-	</div>
-	<span class="w3-xlarge">Are you sure?</span>
-	<div class="loader" id="loader-del-folder" style="display:none"></div>
-	<div class="w3-text-red" id="error-del-folder"></div>
-	<span>
-	Do you really want to delete <span id="foldername_del"></span> Folder?
-	</span>
-		<div class="w3-bar w3-margin-top">
-			<button class="w3-bar-item kel-hover-2 w3-light-gray w3-right" onclick="closeDeleteFolderModal()" >cancel</button>
-			<button class="w3-bar-item kel-hover-2 w3-black w3-right w3-margin-right" onclick="deleteFolder()" >Yes</button>
-		</div>
-	</div>
-	</center>
-	</span>
-</div>
-
-<div class="w3-top">
-  <div class="w3-row w3-padding w3-theme">
+<div>
+  <div class="w3-bar w3-padding w3-theme">
     <div class="w3-col s3">
-      <a href="#" class="w3-button w3-block w3-theme kel-hover-2">HOME</a>
+      <a class="w3-padding w3-block w3-theme" style="text-align:left;cursor:context-menu">FTP-BROWSER</a>
     </div>
-    <div class="w3-col s3">
-      <a href="#about" class="w3-button w3-block w3-theme kel-hover-2">ABOUT</a>
-    </div>
-    <div class="w3-col s3">
-      <a href="#menu" class="w3-button w3-block w3-theme kel-hover-2">MENU</a>
-    </div>
-    <div class="w3-col s3">
-      <a href="logout.php" class="w3-button w3-block w3-theme kel-hover-2 Logout">LOGOUT</a>
+    
+    <div class="w3-col s1 w3-right">
+      <a href="logout.php" class="w3-button w3-block w3-theme kel-hover-2 Logout" style="text-align:center">LOGOUT</a>
     </div>
   </div>
 </div>
 
-<!-- Sidebar/menu -->
+<!-- Sidebar/menu -->	
 <nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px;margin-top:53px" id="mySidebar">
   <div class = "w3-xxlarge w3-padding">
-	<b>Only directory list</b>
+	<b>Only root directory list</b>
   </div>
   <div class="w3-padding-32 w3-large w3-text-grey" style="font-weight:bold">
 <?php
 	
-	$list = $ftpUser->makeListFolder($data, $ftp_conn, ".");
+	$list = $ftpUser->makeListFolder($data, $ftp_conn, "/");
 	
 	foreach($list as $val){
 ?>
@@ -163,54 +128,21 @@ if(isset($_SESSION['ftp_User']) && isset($_SESSION['login_details']) && isset($_
   
 </nav>
 
-<div class="w3-main" style="margin-left:250px;margin-top:53px">
+<div class="w3-main" style="margin-left:250px;">
 
-<div class="w3-bar w3-theme-dark w3-padding">
+   
+	<div class="w3-bar w3-theme-dark w3-padding">
+	<button type="file" class="w3-bar-item w3-button w3-border w3-margin-right kel-hover-2" onclick="openUploadFile()"><i class="fa fa-upload w3-large"></i> Upload File</button>
 	<a class="w3-bar-item w3-button w3-border w3-margin-right kel-hover-2" onclick="openFolderModal()"><i class="fa fa-folder-open w3-large"></i> New Folder</a>
-    <a class="w3-bar-item w3-button w3-border w3-margin-right kel-hover-2"><i class="fa fa-upload w3-large"></i> Upload File</a>
+	<a class="w3-bar-item w3-button w3-border w3-margin-right kel-hover-2" onclick="previousFolder()"><i class="fa fa-mail-reply w3-large"></i> Previous Folder</a>
+	<a class="w3-bar-item w3-button w3-border w3-margin-right kel-hover-2" onclick="rootFolder()"><i class="fa fa-backward w3-large"></i> Root Folder</a>
 </div>
 
-<div class="w3-bar w3-theme w3-padding">
+<center>
+<div class="loader w3-margin-top" id="list_loader"></div>
+</center>
 
-	
- 
-</div>
-
-<div class="w3-bar-block">
-<?php
-
-	$list = $ftpUser->makeListFolder($data, $ftp_conn, ".");
-	
-	foreach($list as $val){
-
-?>
-	<div href="#" class="w3-bar-item w3-button w3-border-bottom w3-border-black w3-hover-white w3-margin-right kel-hover-2">
-	<input type="checkbox" class="w3-margin-right"> <i class="fa fa-folder w3-large"></i> <?php echo $val ?>
-		<a class="w3-right w3-button w3-border w3-border-black w3-margin-right kel-hover-2 w3-hover-blue" onclick="openRenameModal('<?php echo $val ?>')"><i class="fa fa-i-cursor"></i> Rename</a>
-		<a class="w3-right w3-button w3-border w3-border-black w3-margin-right kel-hover-2 w3-hover-red" onclick="openDeleteFolderModal('<?php echo $val ?>')"><i class="fa fa-remove"></i> Remove</a>
-		<a class="w3-right w3-button w3-border w3-border-black w3-margin-right kel-hover-2 w3-hover-green"><i class="fa fa-download"></i> Download</a>
-		<a class="w3-right w3-button w3-border w3-border-black w3-margin-right kel-hover-2 w3-hover-yellow"><i class="fa fa-arrows"></i> Move</a>
-	</div>
-	
-<?php
-	}
-
-	$list = $ftpUser->makeListFile($data, $ftp_conn, ".");
-	
-	foreach($list as $val){
-
-?>
-	<div href="#" class="w3-bar-item w3-button w3-border-bottom w3-border-black w3-hover-white w3-margin-right kel-hover-2">
-	<input type="checkbox" class="w3-margin-right"> <i class="fa fa-file w3-large"></i> <?php echo $val ?>
-		<a class="w3-right w3-button w3-border w3-border-black w3-margin-right kel-hover-2 w3-hover-blue" onclick="openRenameModal('<?php echo $val ?>')"><i class="fa fa-i-cursor"></i> Rename</a>
-		<a class="w3-right w3-button w3-border w3-border-black w3-margin-right kel-hover-2 w3-hover-red" onclick="openDeleteFileModal('<?php echo $val ?>')"><i class="fa fa-remove"></i> Remove</a>
-		<a class="w3-right w3-button w3-border w3-border-black w3-margin-right kel-hover-2 w3-hover-green"><i class="fa fa-download"></i> Download</a>
-		<a class="w3-right w3-button w3-border w3-border-black w3-margin-right kel-hover-2 w3-hover-yellow"><i class="fa fa-arrows"></i> Move</a>
-	</div>
-<?php
-	}
-?>
-</div>
+<div class="w3-bar-block" id="files&folders_list"></div>
 </div>
 
 <script src="JS/fileManager.js"></script>
