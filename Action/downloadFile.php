@@ -9,7 +9,7 @@ if(isset($_SESSION['ftp_User']) && isset($_SESSION['login_details']) && isset($_
 	$ftpUser = $_SESSION['ftp_User'];
 	$data = $_SESSION['data'];
 	$name = $_REQUEST['name'];
-	$local_file = "C:\\Users\\kushang\\Downloads\\".$name;
+	$local_file = "E:\\".$name;
 	
 	if($ftpUser->checkLogin()){
 	//user has logged in area
