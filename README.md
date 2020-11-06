@@ -1,5 +1,3 @@
-# FTP-browser
-This FTP browser is an web based file manager, kinda like cpanel. FTP client can upload, download, delete, rename, edit and view all the files which has been auloaded by them using this FTP browser.
 # FTP-Browser
 
 ![](https://img.shields.io/badge/Code-JavaScript-informational?style=for-the-badge&logo=javascript&color=yellow) ![](https://img.shields.io/badge/Code-php-informational?style=for-the-badge&logo=php&color=787CB5) ![](https://img.shields.io/badge/Database-MySQL-informational?style=for-the-badge&logo=mysql&logoColor=white&color=f29111)
@@ -43,5 +41,6 @@ http://localhost:<port_number>/FTP-Browser/
 You can see a screen like this.
 
 **Step 7)** Enter the username and password which we had set previously. Click login.
+
 **Step 8)** Now you can access the page similar to the below image, where the user can perform all the FTP tasks.
 
