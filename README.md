@@ -21,16 +21,20 @@ $ git clone git@github.com:Kelta-King/FTP-browser.git
 ```sh
 C:\xampp\htdocs\
 ```
+
 **Step 4)** Start the Xampp server. It has 5 modules. Start the Apache and filezilla.
 
 <p align="center">
 <img src="https://github.com/Kelta-King/Kelta-King/blob/master/Images/Xampp.PNG">
 </p>
 
+
 **Step 5)** Open filezilla's admin panel and do the following
 <p align="center">
 <img src="https://github.com/Kelta-King/Kelta-King/blob/master/Images/Xampp_admin.jpg">
 </p>
+
+
 - Goto Edit->Users
 - Click add under the users
 - Add the username as "useraccount1" and press ok.
@@ -43,6 +47,7 @@ C:\xampp\htdocs\
 
 Now, you have created an account for client.
 
+
 **Step 6)** Open the following link in the browser
 ```sh
 http://localhost:<port_number>/FTP-Browser/
@@ -51,6 +56,8 @@ You can see a screen like this.
 <p align="center">
 <img src="https://github.com/Kelta-King/Kelta-King/blob/master/Images/ftp_browser.PNG">
 </p>
+
+
 **Step 7)** Enter the username and password which we had set previously. Click login.
 
 **Step 8)** Now you can access the page similar to the below image, where the user can perform all the FTP tasks.
