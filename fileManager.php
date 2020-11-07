@@ -119,7 +119,7 @@ input[type='file']:before {
 	
 	foreach($list as $val){
 ?>
-    <a href="#" class="w3-bar-item w3-button w3-border-bottom kel-hover-2"><?php echo $val ?></a>
+    <a class="w3-bar-item w3-button w3-border-bottom w3-hover-white w3-text-black" style="cursor:default"><?php echo $val ?></a>
 <?php
 	}
 ?>
