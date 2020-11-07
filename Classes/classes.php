@@ -105,7 +105,7 @@ class ftpUser{
 		
 		if($this->checkLogin()){
 			
-			return ftp_rmdir($ftp_conn, $dir);
+			return @ftp_rmdir($ftp_conn, $dir);
 			
 		}
 		
@@ -140,7 +140,7 @@ class ftpUser{
 		
 		if($this->checkLogin()){
 			
-			return ftp_get($ftp_conn, $local_file, $server_file, FTP_ASCII);
+			return @ftp_get($ftp_conn, $local_file, $server_file, FTP_ASCII);
 			
 		}
 		
