@@ -53,7 +53,6 @@ echo "File Path: ".$_SESSION['directory']."/";
 		<a class="w3-right w3-button w3-border w3-border-black w3-margin-right kel-hover-2 w3-hover-blue" onclick="openRenameModal('<?php echo $dirLoc."/".$val ?>')"><i class="fa fa-i-cursor"></i> Rename</a>
 		<a class="w3-right w3-button w3-border w3-border-black w3-margin-right kel-hover-2 w3-hover-red" onclick="openDeleteFileModal('<?php echo $dirLoc."/".$val ?>')"><i class="fa fa-remove"></i> Remove</a>
 		<a class="w3-right w3-button w3-border w3-border-black w3-margin-right kel-hover-2 w3-hover-green" onclick="openDownloadFileModal('<?php echo $val ?>')"><i class="fa fa-download"></i> Download</a>
-		<a class="w3-right w3-button w3-border w3-border-black w3-margin-right kel-hover-2 w3-hover-yellow"><i class="fa fa-arrows"></i> Move</a>
 	</div>
 <?php
 	}
