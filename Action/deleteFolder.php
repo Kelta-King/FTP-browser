@@ -18,7 +18,7 @@ if(isset($_SESSION['ftp_User']) && isset($_SESSION['login_details']) && isset($_
 			
 		}
 		else{
-			echo "Something went wrong";
+			echo "Folder is not empty";
 		}
 
 	}
