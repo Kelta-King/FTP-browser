@@ -15,7 +15,7 @@ FTP-Browser is a web browser based File manager which manages the files stored i
 
 **Step 2)** Clone this repo
 ```sh
-$ git clone git@github.com:Kelta-King/FTP-browser.git
+$ git clone https://github.com/Kelta-King/FTP-browser.git
 ```
 **Step 3)** Paste the cloned file inside the following path
 ```sh
